@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "application": { "id": "web-notes", "name": "GUI-only Notes", "version": "1.0.0", "description": "A local application with no task API, controlled through semantic UI targets." },
+  "capabilities": [
+    {
+      "name": "note.create", "description": "Create a note and verify the application confirmation", "effect": "write",
+      "inputSchema": { "type": "object", "properties": { "title": { "type": "string", "minLength": 1, "maxLength": 200 } }, "required": ["title"], "additionalProperties": false },
+      "outputSchema": { "type": "object", "properties": { "status": { "type": "string" }, "verified": { "type": "boolean" } }, "required": ["status", "verified"], "additionalProperties": false },
+      "timeoutMs": 20000,
+      "verification": [{ "type": "result", "pointer": "/verified", "equals": true }],
+      "bindings": [{ "id": "semantic-ui", "adapter": "browser", "priority": 0,
+        "config": {
+          "url": "http://127.0.0.1:3100", "headless": true,
+          "preconditions": [{ "target": { "testId": "notes-app" }, "state": "visible" }, { "target": { "testId": "status" }, "state": "text", "text": "Ready" }],
+          "steps": [
+            { "action": "fill", "target": { "label": "Note title" }, "value": "{{title}}" },
+            { "action": "click", "target": { "role": "button", "name": "Add note" } },
+            { "action": "read", "target": { "testId": "status" }, "as": "status" }
+          ],
+          "postconditions": [{ "target": { "testId": "status" }, "state": "text", "text": "Created: {{title}}" }]
+        }
+      }],
+      "provenance": { "backend": "authored-ui", "source": "examples/web-notes/index.html", "notes": "Semantic workflow authored for a local fixture; autonomous discovery is not claimed." }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "name": "cli-anything",
+  "version": "0.1.0",
+  "description": "Universal Software-to-Agent Interface: reusable, verifiable capabilities via CLI and MCP",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": "^22.19.0 || ^24.11.0 || >=26.0.0" },
+  "bin": { "cli-anything": "dist/cli.js" },
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist", "schemas", "examples", "docs", "licenses", "README.md", "README.zh-CN.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "SECURITY.md", "CONTRIBUTING.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:browser": "vitest run --config vitest.browser.config.ts",
+    "demo": "node examples/web-notes/server.mjs",
+    "check": "npm run typecheck && npm test && npm run build",
+    "prepack": "npm run build"
+  },
+  "keywords": ["agent", "cli", "mcp", "automation", "capability", "playwright"],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "ajv": "8.20.0",
+    "commander": "14.0.3",
+    "playwright": "1.59.1",
+    "rea-agents": "6.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.1",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

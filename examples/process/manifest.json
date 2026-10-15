@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "application": { "id": "local-demo", "name": "Local SDK bridge", "version": "1.0.0", "description": "A minimal process adapter; replace its implementation with your application SDK." },
+  "capabilities": [
+    {
+      "name": "app.info", "description": "Read local application information", "effect": "read",
+      "inputSchema": { "type": "object", "properties": {}, "additionalProperties": false },
+      "verification": [{ "type": "result", "pointer": "/ready", "equals": true }],
+      "bindings": [{ "id": "sdk", "adapter": "process", "priority": 10, "config": { "command": "node", "args": ["adapter.mjs", "info"], "output": "json" } }]
+    },
+    {
+      "name": "text.echo", "description": "Return a string through a fixed executable and argument array", "effect": "read",
+      "inputSchema": { "type": "object", "properties": { "text": { "type": "string", "maxLength": 10000 } }, "required": ["text"], "additionalProperties": false },
+      "verification": [{ "type": "result", "pointer": "/ready", "equals": true }],
+      "bindings": [{ "id": "sdk", "adapter": "process", "config": { "command": "node", "args": ["adapter.mjs", "echo", "{{text}}"], "output": "json" } }]
+    }
+  ]
+}

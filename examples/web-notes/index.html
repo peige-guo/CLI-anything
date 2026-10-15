@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Notes · CLI Anything fixture</title>
+<style>
+  body{font:16px system-ui;background:#f6f5f1;color:#202b25;max-width:680px;margin:70px auto;padding:20px}
+  h1{font-size:40px}label{display:block;margin:24px 0 8px}input{font:inherit;padding:12px;width:90%;border:1px solid #abb6ac;border-radius:8px}
+  button{font:inherit;background:#234c37;color:white;border:0;padding:12px 22px;border-radius:8px;margin-top:16px;cursor:pointer}
+  #status{margin:24px 0;color:#234c37}li{padding:12px;background:white;margin:8px 0;border-radius:8px}
+</style>
+<main data-testid="notes-app">
+  <p>CLI ANYTHING / GUI-ONLY TEST APPLICATION</p>
+  <h1>Notes</h1>
+  <form id="form">
+    <label for="title">Note title</label>
+    <input id="title" aria-label="Note title" required maxlength="200">
+    <button type="submit">Add note</button>
+  </form>
+  <p id="status" role="status" data-testid="status">Ready</p>
+  <ul id="notes" aria-label="Notes"></ul>
+</main>
+<script>
+  document.querySelector('#form').addEventListener('submit', event => {
+    event.preventDefault();
+    const title = document.querySelector('#title').value;
+    const note = document.createElement('li');
+    note.textContent = title;
+    document.querySelector('#notes').append(note);
+    document.querySelector('#status').textContent = `Created: ${title}`;
+    document.querySelector('#title').value = '';
+  });
+</script>
+</html>

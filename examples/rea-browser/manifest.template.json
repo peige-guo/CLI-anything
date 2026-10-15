@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "application": { "id": "rea-notes", "name": "Notes via REA", "version": "1.0.0", "description": "A GUI-only application controlled with REA browser scenario replay." },
+  "capabilities": [{
+    "name": "note.create", "description": "Create a note via REA and capture the resulting GUI", "effect": "write",
+    "inputSchema": { "type": "object", "properties": { "title": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "^[A-Za-z0-9 ._-]+$" } }, "required": ["title"], "additionalProperties": false },
+    "timeoutMs": 30000,
+    "verification": [
+      { "type": "result", "pointer": "/steps/3/status", "equals": "completed" },
+      { "type": "result-contains", "pointer": "/steps/3/artifacts/dom/value/text", "contains": ">Created: {{title}}</p>" }
+    ],
+    "bindings": [{ "id": "rea-ui", "adapter": "rea", "config": {
+      "tool": "capture_browser_scenario",
+      "arguments": {
+        "browser": { "mode": "launch", "executable_path": "/ABSOLUTE/PATH/TO/CHROMIUM" },
+        "start_url": { "url": "http://127.0.0.1:3100" },
+        "actions": [
+          { "step_id": "title", "action": "fill", "locator": { "kind": "role", "role": "textbox", "name": "Note title" }, "value": { "source": "literal", "value": "{{title}}" } },
+          { "step_id": "create", "action": "click", "locator": { "kind": "role", "role": "button", "name": "Add note" } },
+          { "step_id": "confirm", "action": "wait_for", "locator": { "kind": "test_id", "value": "status" }, "state": "visible" }
+        ],
+        "capture": { "at_end": ["dom", "url"] }
+      }
+    } }]
+  }]
+}
