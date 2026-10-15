@@ -4,6 +4,8 @@
 
 [English](README.md) · [架构](docs/architecture.md) · [能力声明](docs/manifest.md) · [REA 集成](docs/rea-integration.md)
 
+真实软件测试步骤和已执行的 Cursor 案例见 [真实案例测试](docs/real-world-testing.zh-CN.md)。
+
 复用 REA 的应用分析、能力发现、浏览器场景回放和 Evidence，在其上增加：
 
 ```text

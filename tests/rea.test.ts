@@ -20,3 +20,13 @@ test('REA MCP contract exposes the discovery and replay providers we integrate',
     }
   } finally { await client.close(); }
 }, 30000);
+
+test('actual upstream failures retain their diagnostic code in the CLI boundary', async () => {
+  const client = new ReaClient();
+  try {
+    await client.connect();
+    await expect(client.call('analyze_javascript_application', {
+      input_path: '/cli-anything-nonexistent-analysis-target', format: 'auto', integrity_policy: 'fail',
+    })).rejects.toThrow(/REA analyze_javascript_application \[[^\]]+\]:/);
+  } finally { await client.close(); }
+}, 30000);

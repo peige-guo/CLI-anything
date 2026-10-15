@@ -39,7 +39,27 @@ export class ReaClient {
 
   async call(tool: string, args: Record<string, unknown>, signal?: AbortSignal): Promise<ReaEvidence> {
     const result = await this.client.callTool({ name: tool, arguments: args }, undefined, { signal, timeout: 300000 });
-    if (result.isError) throw new AppError('REA_TOOL_FAILED', `REA tool ${tool} failed. Run the same request with REA for detailed diagnostics.`);
+    if (result.isError) {
+      let code = 'unknown';
+      let message = 'Inspect the target and REA provider diagnostics.';
+      const blocks: unknown[] = Array.isArray(result.content) ? result.content : [];
+      const block = blocks.find((item): item is { type: 'text'; text: string } =>
+        item !== null && typeof item === 'object' && 'type' in item && item.type === 'text'
+        && 'text' in item && typeof item.text === 'string');
+      if (block) {
+        try {
+          const parsed = JSON.parse(block.text) as Record<string, unknown>;
+          const diagnostic = parsed.error && typeof parsed.error === 'object'
+            ? parsed.error as Record<string, unknown> : parsed;
+          if (typeof diagnostic.code === 'string') code = diagnostic.code;
+          if (typeof diagnostic.message === 'string') message = diagnostic.message.slice(0, 1000);
+        } catch { /* Non-JSON provider errors retain the bounded generic diagnostic. */ }
+      }
+      const hint = code === 'resource_constraint'
+        ? ' Use a smaller analysis root. --sources limits parsing but still inventories the entire root; large retained Evidence requires upstream export or paged views.'
+        : '';
+      throw new AppError('REA_TOOL_FAILED', `REA ${tool} [${code}]: ${message}${hint}`);
+    }
     const evidence = object(result.structuredContent, 'REA structuredContent');
     assert(typeof evidence.evidence_id === 'string' && typeof evidence.operation === 'string'
       && Object.hasOwn(evidence, 'normalized_result'), 'REA_CONTRACT_MISMATCH', 'REA returned an unsupported Evidence envelope');

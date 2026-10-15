@@ -4,6 +4,9 @@
 
 [简体中文](README.zh-CN.md) · [Architecture](docs/architecture.md) · [Manifest contract](docs/manifest.md) · [REA integration](docs/rea-integration.md)
 
+See the [real-world testing guide](docs/real-world-testing.zh-CN.md) for a measured,
+read-only Cursor discovery case and end-to-end application acceptance criteria.
+
 CLI Anything extends REA's application analysis and Evidence-producing MCP tools
 with a capability registry, stable CLI commands, reusable GUI workflows,
 verification and an agent-facing MCP server.
